@@ -27,6 +27,38 @@ jobs:
           GOOGLE_SERVICES_JSON: ${{ secrets.GOOGLE_SERVICES_JSON }}
         run: echo "$GOOGLE_SERVICES_JSON" | base64 -d > app/google-services.json
 
+      - name: Create Mock Google Services JSON (Fallback)
+        if: hashFiles('app/google-services.json') == ''
+        run: |
+          echo '{
+            "project_info": {
+              "project_number": "000000000000",
+              "project_id": "mock-project",
+              "storage_bucket": "mock-project.appspot.com"
+            },
+            "client": [
+              {
+                "client_info": {
+                  "mobilesdk_app_id": "1:000000000000:android:mock",
+                  "android_client_info": {
+                    "package_name": "com.finprov.plapofy"
+                  }
+                },
+                "api_key": [
+                  {
+                    "current_key": "mock-api-key"
+                  }
+                ],
+                "services": {
+                  "appinvite_service": {
+                    "other_platform_oauth_client": []
+                  }
+                }
+              }
+            ],
+            "configuration_version": "1"
+          }' > app/google-services.json
+
       - name: Build Debug APK
         run: gradle assembleDebug
 
