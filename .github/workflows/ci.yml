@@ -20,6 +20,8 @@ jobs:
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.13'
 
       - name: Decode google-services.json
         if: env.GOOGLE_SERVICES_JSON != ''
