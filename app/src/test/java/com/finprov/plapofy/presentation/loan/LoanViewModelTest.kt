@@ -43,32 +43,51 @@ class LoanViewModelTest {
     @Mock
     private lateinit var branchRepository: BranchRepository
 
+    @Mock
+    private lateinit var creditLineRepository: com.finprov.plapofy.domain.repository.CreditLineRepository
+
+    @Mock
+    private lateinit var pendingLoanDao: com.finprov.plapofy.data.local.dao.PendingLoanDao
+
+    @Mock
+    private lateinit var plafondDao: com.finprov.plapofy.data.local.dao.PlafondDao
+
     private lateinit var viewModel: LoanViewModel
 
-    private val testPlafond = Plafond(
+    private valtestPlafond = Plafond(
         id = 1L,
+        code = "KMG",
         name = "Kredit Multiguna",
-        interestRate = 12.0,
+        description = "Pinjaman cepat cair",
         minAmount = 1_000_000.0,
         maxAmount = 50_000_000.0,
-        minTenor = 6,
-        maxTenor = 36
+        interests = listOf(
+            com.finprov.plapofy.domain.model.ProductInterest(1L, 6, 12.0),
+            com.finprov.plapofy.domain.model.ProductInterest(2L, 36, 12.0)
+        )
     )
 
     private val testBranches = listOf(
-        Branch(id = 1L, name = "Jakarta Pusat", code = "JKT01"),
-        Branch(id = 2L, name = "Bandung", code = "BDG01")
+        Branch(id = 1L, name = "Jakarta Pusat", code = "JKT01", location = "Jakarta"),
+        Branch(id = 2L, name = "Bandung", code = "BDG01", location = "Bandung")
     )
 
     @Before
     fun setup() {
         MockitoAnnotations.openMocks(this)
         Dispatchers.setMain(testDispatcher)
+        
+        // Mock default behavior needed for initialization or flows
+        whenever(pendingLoanDao.getPendingForDisplay()).thenReturn(kotlinx.coroutines.flow.flowOf(emptyList()))
+        
         viewModel = LoanViewModel(
             loanRepository = loanRepository,
             plafondRepository = plafondRepository,
             profileRepository = profileRepository,
-            branchRepository = branchRepository
+            branchRepository = branchRepository,
+            creditLineRepository = creditLineRepository,
+            pendingLoanDao = pendingLoanDao,
+            plafondDao = plafondDao
         )
     }
 
@@ -139,7 +158,9 @@ class LoanViewModelTest {
             amount = 500_000.0, // below min of 1_000_000
             tenor = 12,
             purpose = "Test",
-            branchId = 1L
+            branchId = 1L,
+            latitude = 0.0,
+            longitude = 0.0
         )
         testDispatcher.scheduler.advanceUntilIdle()
 
@@ -166,7 +187,9 @@ class LoanViewModelTest {
             amount = 10_000_000.0,
             tenor = 48, // above max of 36
             purpose = "Test",
-            branchId = 1L
+            branchId = 1L,
+            latitude = 0.0,
+            longitude = 0.0
         )
         testDispatcher.scheduler.advanceUntilIdle()
 
