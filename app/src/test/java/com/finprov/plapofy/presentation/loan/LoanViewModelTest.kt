@@ -68,8 +68,8 @@ class LoanViewModelTest {
     )
 
     private val testBranches = listOf(
-        Branch(id = 1L, name = "Jakarta Pusat", code = "JKT01", location = "Jakarta"),
-        Branch(id = 2L, name = "Bandung", code = "BDG01", location = "Bandung")
+        Branch(id = 1L, name = "Jakarta Pusat", location = "Jakarta"),
+        Branch(id = 2L, name = "Bandung", location = "Bandung")
     )
 
     @Before
