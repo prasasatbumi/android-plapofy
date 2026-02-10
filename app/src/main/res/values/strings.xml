@@ -1,0 +1,7 @@
+<resources>
+    <string name="app_name">Plapofy Mobile</string>
+    <string name="default_notification_channel_id">plapofy_channel</string>
+    <!-- Replace with your actual Google OAuth 2.0 Web Client ID from Firebase Console -->
+    <string name="default_web_client_id">591839704496-8d993fbkt5oqq668f77kdemi0kqfpjf4.apps.googleusercontent.com</string>
+</resources>
+
