@@ -38,7 +38,11 @@ interface PendingDisbursementDao {
     @Query("DELETE FROM pending_disbursement")
     suspend fun clearAll()
 
-    @Query("UPDATE pending_disbursement SET status = :status, retryCount = :retryCount, lastAttemptAt = :lastAttemptAt, errorMessage = :errorMessage WHERE id = :id")
+    @Query("""
+        UPDATE pending_disbursement 
+        SET status = :status, retryCount = :retryCount, lastAttemptAt = :lastAttemptAt, errorMessage = :errorMessage 
+        WHERE id = :id
+    """)
     suspend fun updateStatus(id: String, status: String, retryCount: Int, lastAttemptAt: Long?, errorMessage: String?)
 
     // Count pending disbursements for a credit line (duplicate prevention)

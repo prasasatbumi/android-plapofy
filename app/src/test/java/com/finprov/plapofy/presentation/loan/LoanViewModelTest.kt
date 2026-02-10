@@ -54,7 +54,7 @@ class LoanViewModelTest {
 
     private lateinit var viewModel: LoanViewModel
 
-    private valtestPlafond = Plafond(
+    private val testPlafond = Plafond(
         id = 1L,
         code = "KMG",
         name = "Kredit Multiguna",
