@@ -121,7 +121,7 @@ class PinRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             // If offline and check above failed (or was false), verify if user exists locally
              try {
-                val localUser = userDao.getUser().kotlinx.coroutines.flow.firstOrNull()
+                val localUser = userDao.getUser().firstOrNull()
                 if (localUser != null) {
                     // Return local status (which might be false, but at least we checked)
                     Result.success(localUser.isPinSet)
