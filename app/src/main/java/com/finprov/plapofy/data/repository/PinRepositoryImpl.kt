@@ -5,6 +5,7 @@ import com.finprov.plapofy.data.remote.dto.ChangePinRequest
 import com.finprov.plapofy.data.remote.dto.SetPinRequest
 import com.finprov.plapofy.data.remote.dto.VerifyPinRequest
 import com.finprov.plapofy.domain.repository.PinRepository
+import kotlinx.coroutines.flow.firstOrNull
 import javax.inject.Inject
 
 class PinRepositoryImpl @Inject constructor(
