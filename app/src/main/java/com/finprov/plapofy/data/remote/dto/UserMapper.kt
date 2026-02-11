@@ -20,7 +20,9 @@ fun ProfileDto.toEntity(): UserEntity {
         kycStatus = kycStatus ?: "NOT_VERIFIED",
         ktpImagePath = ktpImagePath,
         selfieImagePath = selfieImagePath,
-        isGoogleUser = isGoogleUser
+        isGoogleUser = isGoogleUser,
+        isPinSet = pinSet,
+        pinHash = pinHash
     )
 }
 

@@ -168,4 +168,7 @@ dependencies {
     ksp("androidx.hilt:hilt-compiler:1.1.0")
     // Root Detection
     implementation("com.scottyab:rootbeer-lib:0.1.1")
+    
+    // BCrypt for Offline PIN
+    implementation("org.mindrot:jbcrypt:0.4")
 }

@@ -23,7 +23,9 @@ data class UserEntity(
     val kycStatus: String? = null,
     val ktpImagePath: String? = null,
     val selfieImagePath: String? = null,
-    val isGoogleUser: Boolean = false
+    val isGoogleUser: Boolean = false,
+    val isPinSet: Boolean = false,
+    val pinHash: String? = null
 ) {
     fun toDomain(): User {
         return User(

@@ -17,7 +17,9 @@ data class User(
     val kycStatus: String? = null,
     val ktpImagePath: String? = null,
     val selfieImagePath: String? = null,
-    val isGoogleUser: Boolean = false
+    val isGoogleUser: Boolean = false,
+    val isPinSet: Boolean = false,
+    val pinHash: String? = null
 ) {
     // Helper to get full image URL
     fun getKtpUrl(): String? = sanitizeUrl(ktpImagePath)

@@ -27,7 +27,7 @@ import com.finprov.plapofy.data.local.entity.CreditLineEntity
         PendingDisbursementEntity::class,
         CreditLineEntity::class
     ],
-    version = 5,
+    version = 7,
     exportSchema = false
 )
 abstract class AppDatabase : RoomDatabase() {
