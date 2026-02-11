@@ -20,8 +20,6 @@ fun ProfileDto.toEntity(): UserEntity {
         kycStatus = kycStatus ?: "NOT_VERIFIED",
         ktpImagePath = ktpImagePath,
         selfieImagePath = selfieImagePath,
-        ktpImagePath = ktpImagePath,
-        selfieImagePath = selfieImagePath,
         isGoogleUser = isGoogleUser,
         pinSet = pinSet
     )
@@ -43,8 +41,6 @@ fun UserDto.toEntity(): UserEntity {
         bankAccountNumber = bankAccountNumber,
         isActive = isActive,
         kycStatus = null, // UserDto might not have KYC status, default to null or fetch separately
-        ktpImagePath = null,
-        selfieImagePath = null,
         ktpImagePath = null,
         selfieImagePath = null,
         isGoogleUser = isGoogleUser,
