@@ -123,6 +123,8 @@ class AuthRepositoryImpl @Inject constructor(
             } catch (e: Exception) {
                  android.util.Log.w("AuthRepository", "Failed to logout from backend: ${e.message}")
             }
+            database.pendingLoanDao().clearAll()
+            database.creditLineDao().deleteAll()
             tokenManager.clearAuthData()
             database.clearAllTables()
         }
