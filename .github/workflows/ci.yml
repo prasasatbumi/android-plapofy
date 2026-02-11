@@ -65,7 +65,7 @@ jobs:
         run: gradle assembleDebug
 
       - name: Run Unit Tests
-        run: gradle test
+        run: gradle testDebugUnitTest
         continue-on-error: true
 
       - name: Upload APK
