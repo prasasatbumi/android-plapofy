@@ -10,6 +10,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -46,6 +47,21 @@ class PinViewModel @Inject constructor(
 
     init {
         checkUserType()
+        syncPinState()
+    }
+
+    private fun syncPinState() {
+        viewModelScope.launch {
+            // Robustness: Sync TokenManager with DB source of truth
+            // If TokenManager is false/stale but DB has user with pinSet=true, update TokenManager
+            val user = authRepository.getCurrentUser()
+            if (user?.pinSet == true) {
+                val currentTokenState = kotlinx.coroutines.flow.firstOrNull(tokenManager.isPinSet)
+                if (currentTokenState != true) {
+                    tokenManager.setPinSet(true)
+                }
+            }
+        }
     }
 
     private fun checkUserType() {
