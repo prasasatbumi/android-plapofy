@@ -56,7 +56,7 @@ class PinViewModel @Inject constructor(
             // If TokenManager is false/stale but DB has user with pinSet=true, update TokenManager
             val user = authRepository.getCurrentUser()
             if (user?.pinSet == true) {
-                val currentTokenState = kotlinx.coroutines.flow.firstOrNull(tokenManager.isPinSet)
+                val currentTokenState = tokenManager.isPinSet.firstOrNull()
                 if (currentTokenState != true) {
                     tokenManager.setPinSet(true)
                 }
