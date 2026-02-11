@@ -35,8 +35,7 @@ class AuthRepositoryImpl @Inject constructor(
                     token = loginData.token,
                     userId = loginData.userId,
                     username = loginData.username,
-                    userName = loginData.username,
-                    pinSet = loginData.pinSet
+                    userName = loginData.username 
                 )
                 
                 try {
@@ -123,8 +122,6 @@ class AuthRepositoryImpl @Inject constructor(
             } catch (e: Exception) {
                  android.util.Log.w("AuthRepository", "Failed to logout from backend: ${e.message}")
             }
-            database.pendingLoanDao().clearAll()
-            database.creditLineDao().deleteAll()
             tokenManager.clearAuthData()
             database.clearAllTables()
         }
@@ -151,7 +148,6 @@ class AuthRepositoryImpl @Inject constructor(
 
             // Fallback to minimal user from TokenManager
             val userName = tokenManager.userName.first()
-            val isPinSet = tokenManager.isPinSet.first()
             return User(
                 id = userId,
                 username = username,
@@ -164,8 +160,7 @@ class AuthRepositoryImpl @Inject constructor(
                 occupation = null,
                 monthlyIncome = null,
                 bankName = null,
-                bankAccountNumber = null,
-                pinSet = isPinSet
+                bankAccountNumber = null
             )
         }
         return null
@@ -230,8 +225,7 @@ class AuthRepositoryImpl @Inject constructor(
                     token = loginData.token,
                     userId = loginData.userId,
                     username = loginData.username,
-                    userName = loginData.username,
-                    pinSet = loginData.pinSet
+                    userName = loginData.username 
                 )
                 
                 try {
@@ -258,8 +252,7 @@ class AuthRepositoryImpl @Inject constructor(
                     monthlyIncome = null,
                     bankName = null,
                     bankAccountNumber = null,
-                    isActive = true,
-                    pinSet = loginData.pinSet
+                    isActive = true
                 )
 
                 Result.success(basicUser)

@@ -22,8 +22,7 @@ data class ProfileDto(
     @SerializedName("kycStatus") val kycStatus: String?,
     @SerializedName("ktpImagePath") val ktpImagePath: String?,
     @SerializedName("selfieImagePath") val selfieImagePath: String?,
-    @SerializedName("isGoogleUser") val isGoogleUser: Boolean = false,
-    @SerializedName("pinSet") val pinSet: Boolean = false
+    @SerializedName("isGoogleUser") val isGoogleUser: Boolean = false
 )
 
 /**

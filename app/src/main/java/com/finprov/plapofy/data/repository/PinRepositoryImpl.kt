@@ -5,19 +5,16 @@ import com.finprov.plapofy.data.remote.dto.ChangePinRequest
 import com.finprov.plapofy.data.remote.dto.SetPinRequest
 import com.finprov.plapofy.data.remote.dto.VerifyPinRequest
 import com.finprov.plapofy.domain.repository.PinRepository
-import kotlinx.coroutines.flow.firstOrNull
 import javax.inject.Inject
 
 class PinRepositoryImpl @Inject constructor(
-    private val api: PinApi,
-    private val tokenManager: com.finprov.plapofy.data.local.TokenManager
+    private val api: PinApi
 ) : PinRepository {
 
     override suspend fun setPin(password: String, pin: String): Result<Unit> {
         return try {
             val response = api.setPin(SetPinRequest(password, pin, pin))
             if (response.isSuccessful) {
-                tokenManager.setPinSet(true)
                 Result.success(Unit)
             } else {
                 Result.failure(Exception("Failed to set PIN: ${response.message()}"))
@@ -49,16 +46,7 @@ class PinRepositoryImpl @Inject constructor(
                 Result.failure(Exception("Failed to verify PIN: ${response.message()}"))
             }
         } catch (e: Exception) {
-            // Offline Fallback: Optimistic verification
-            // If we know the user HAS a PIN set locally, we assume they entered it correctly
-            // to allow the offline flow to proceed. The backend will validate it later during sync if needed.
-            
-            val isPinSet = tokenManager.isPinSet.firstOrNull() == true
-            if (isPinSet) {
-                 Result.success(true)
-            } else {
-                 Result.failure(e)
-            }
+            Result.failure(e)
         }
     }
 
@@ -66,16 +54,12 @@ class PinRepositoryImpl @Inject constructor(
         return try {
             val response = api.getPinStatus()
             if (response.isSuccessful && response.body() != null) {
-                val isSet = response.body()!!.pinSet
-                tokenManager.setPinSet(isSet)
-                Result.success(isSet)
+                Result.success(response.body()!!.pinSet)
             } else {
                 Result.failure(Exception("Failed to get PIN status"))
             }
         } catch (e: Exception) {
-            // Offline Fallback
-             val isPinSet = tokenManager.isPinSet.firstOrNull() == true
-             Result.success(isPinSet)
+            Result.failure(e)
         }
     }
 }

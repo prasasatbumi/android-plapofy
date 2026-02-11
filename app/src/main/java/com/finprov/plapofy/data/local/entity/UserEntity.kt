@@ -3,7 +3,6 @@ package com.finprov.plapofy.data.local.entity
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.finprov.plapofy.domain.model.User
-import com.google.gson.annotations.SerializedName
 
 @Entity(tableName = "user")
 data class UserEntity(
@@ -22,10 +21,9 @@ data class UserEntity(
     val bankAccountNumber: String?,
     val isActive: Boolean = true,
     val kycStatus: String? = null,
-    @SerializedName("ktpImagePath") val ktpImagePath: String? = null,
-    @SerializedName("selfieImagePath") val selfieImagePath: String? = null,
-    @SerializedName("isGoogleUser") val isGoogleUser: Boolean = false,
-    @SerializedName("pinSet") val pinSet: Boolean = false
+    val ktpImagePath: String? = null,
+    val selfieImagePath: String? = null,
+    val isGoogleUser: Boolean = false
 ) {
     fun toDomain(): User {
         return User(
@@ -45,8 +43,7 @@ data class UserEntity(
             kycStatus = kycStatus,
             ktpImagePath = ktpImagePath,
             selfieImagePath = selfieImagePath,
-            isGoogleUser = isGoogleUser,
-            pinSet = pinSet
+            isGoogleUser = isGoogleUser
         )
     }
 }
@@ -69,7 +66,6 @@ fun User.toEntity(): UserEntity {
         kycStatus = kycStatus,
         ktpImagePath = ktpImagePath,
         selfieImagePath = selfieImagePath,
-        isGoogleUser = isGoogleUser,
-        pinSet = pinSet
+        isGoogleUser = isGoogleUser
     )
 }

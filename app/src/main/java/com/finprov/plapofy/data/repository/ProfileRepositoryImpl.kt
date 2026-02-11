@@ -51,9 +51,6 @@ class ProfileRepositoryImpl @Inject constructor(
                     // Cache it
                     userDao.insertUser(response.data.toEntity())
                     
-                    // Update PIN status in TokenManager
-                    tokenManager.setPinSet(response.data.pinSet)
-                    
                     val user = response.data.toDomain()
                     Result.success(user)
                 } else {
@@ -110,9 +107,6 @@ class ProfileRepositoryImpl @Inject constructor(
             if (response.success && response.data != null) {
                 // Update cache
                 userDao.insertUser(response.data.toEntity())
-                
-                // Update PIN status in TokenManager
-                tokenManager.setPinSet(response.data.pinSet)
                 
                 val user = response.data.toDomain()
                 Result.success(user)
@@ -205,8 +199,7 @@ class ProfileRepositoryImpl @Inject constructor(
             kycStatus = kycStatus,
             ktpImagePath = ktpImagePath,
             selfieImagePath = selfieImagePath,
-            isGoogleUser = isGoogleUser,
-            pinSet = pinSet
+            isGoogleUser = isGoogleUser
         )
     }
 
@@ -224,8 +217,7 @@ class ProfileRepositoryImpl @Inject constructor(
             monthlyIncome = null,
             bankName = null,
             bankAccountNumber = null,
-            isGoogleUser = false,
-            pinSet = false
+            isGoogleUser = false
         )
     }
 }

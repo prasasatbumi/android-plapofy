@@ -24,8 +24,7 @@ data class LoginResponse(
     @SerializedName("userId") val userId: Long,
     @SerializedName("username") val username: String,
     @SerializedName("role") val role: String?,
-    @SerializedName("roles") val roles: List<String>?,
-    @SerializedName("pinSet") val pinSet: Boolean = false
+    @SerializedName("roles") val roles: List<String>?
 )
 
 // Register Response
@@ -51,6 +50,5 @@ data class UserDto(
     @SerializedName("bankName") val bankName: String?,
     @SerializedName("bankAccountNumber") val bankAccountNumber: String?,
     @SerializedName("isActive") val isActive: Boolean = true,
-    @SerializedName("isGoogleUser") val isGoogleUser: Boolean = false,
-    @SerializedName("pinSet") val pinSet: Boolean = false
+    @SerializedName("isGoogleUser") val isGoogleUser: Boolean = false
 )

@@ -8,26 +8,17 @@ import com.finprov.plapofy.domain.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
-import kotlinx.coroutines.flow.SharingStarted
-import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class PinViewModel @Inject constructor(
     private val pinRepository: PinRepository,
-    private val authRepository: AuthRepository,
-    private val tokenManager: com.finprov.plapofy.data.local.TokenManager
+    private val authRepository: AuthRepository
 ) : ViewModel() {
 
-    // Offline-first: Observe TokenManager for PIN status
-    val hasPin = tokenManager.isPinSet
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = false
-        )
+    private val _hasPin = MutableStateFlow<Boolean?>(null)
+    val hasPin = _hasPin.asStateFlow()
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading = _isLoading.asStateFlow()
@@ -47,21 +38,6 @@ class PinViewModel @Inject constructor(
 
     init {
         checkUserType()
-        syncPinState()
-    }
-
-    private fun syncPinState() {
-        viewModelScope.launch {
-            // Robustness: Sync TokenManager with DB source of truth
-            // If TokenManager is false/stale but DB has user with pinSet=true, update TokenManager
-            val user = authRepository.getCurrentUser()
-            if (user?.pinSet == true) {
-                val currentTokenState = tokenManager.isPinSet.firstOrNull()
-                if (currentTokenState != true) {
-                    tokenManager.setPinSet(true)
-                }
-            }
-        }
     }
 
     private fun checkUserType() {
@@ -69,8 +45,6 @@ class PinViewModel @Inject constructor(
              val user = authRepository.getCurrentUser()
              _isGoogleUser.value = user?.isGoogleUser == true
         }
-        // Initial sync with backend
-        checkPinStatus()
     }
     
     fun verifyPassword(password: String, onSuccess: () -> Unit) {
@@ -101,12 +75,13 @@ class PinViewModel @Inject constructor(
             _isLoading.value = true
             pinRepository.getPinStatus()
                 .onSuccess { status ->
-                    // TokenManager is updated by Repository, Flow will emit new value
+                    _hasPin.value = status
                     _isLoading.value = false
                 }
                 .onFailure {
                     _isLoading.value = false
-                    // Offline? Keep showing cached value from Flow
+                    // Don't show error for status check, default to false
+                    _hasPin.value = false
                 }
         }
     }
@@ -119,7 +94,7 @@ class PinViewModel @Inject constructor(
                 .onSuccess {
                     _isLoading.value = false
                     _successMessage.value = "PIN berhasil dibuat"
-                    // _hasPin.value = true -> Handled by TokenManager flow
+                    _hasPin.value = true
                     onSuccess()
                 }
                 .onFailure { e ->
