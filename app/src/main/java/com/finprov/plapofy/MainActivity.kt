@@ -70,10 +70,10 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         
         // Security: Block screen capture and screen recording
-        // window.setFlags(
-        //     WindowManager.LayoutParams.FLAG_SECURE,
-        //     WindowManager.LayoutParams.FLAG_SECURE
-        // )
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_SECURE,
+            WindowManager.LayoutParams.FLAG_SECURE
+        )
         
         // Security: Root detection
         val rootBeer = RootBeer(this)

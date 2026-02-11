@@ -171,8 +171,4 @@ dependencies {
     
     // BCrypt for Offline PIN
     implementation("org.mindrot:jbcrypt:0.4")
-
-    // Chucker
-    debugImplementation("com.github.chuckerteam.chucker:library:4.0.0")
-    releaseImplementation("com.github.chuckerteam.chucker:library-no-op:4.0.0")
 }

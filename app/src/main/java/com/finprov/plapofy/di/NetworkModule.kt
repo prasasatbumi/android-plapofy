@@ -75,14 +75,12 @@ object NetworkModule {
     fun provideOkHttpClient(
         authInterceptor: AuthInterceptor,
         sessionExpiredInterceptor: SessionExpiredInterceptor,
-        certificatePinner: CertificatePinner,
-        @ApplicationContext context: Context
+        certificatePinner: CertificatePinner
     ): OkHttpClient {
         return OkHttpClient.Builder()
             .certificatePinner(certificatePinner)
             .addInterceptor(authInterceptor)
             .addInterceptor(sessionExpiredInterceptor)
-            .addInterceptor(com.chuckerteam.chucker.api.ChuckerInterceptor.Builder(context).build())
             .addInterceptor(HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BODY
             })
