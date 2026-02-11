@@ -5,6 +5,7 @@ import com.finprov.plapofy.data.remote.dto.ChangePinRequest
 import com.finprov.plapofy.data.remote.dto.SetPinRequest
 import com.finprov.plapofy.data.remote.dto.VerifyPinRequest
 import com.finprov.plapofy.domain.repository.PinRepository
+import kotlinx.coroutines.flow.firstOrNull
 import javax.inject.Inject
 
 class PinRepositoryImpl @Inject constructor(
@@ -17,7 +18,7 @@ class PinRepositoryImpl @Inject constructor(
             val response = api.setPin(SetPinRequest(password, pin, pin))
             if (response.isSuccessful) {
                 try {
-                    val localUser = userDao.getUser().kotlinx.coroutines.flow.firstOrNull()
+                    val localUser = userDao.getUser().firstOrNull()
                     if (localUser != null) {
                         // Generate local hash using BCrypt
                         val hashedPin = org.mindrot.jbcrypt.BCrypt.hashpw(pin, org.mindrot.jbcrypt.BCrypt.gensalt())
@@ -38,7 +39,7 @@ class PinRepositoryImpl @Inject constructor(
             val response = api.changePin(ChangePinRequest(oldPin, newPin, newPin))
             if (response.isSuccessful) {
                 try {
-                    val localUser = userDao.getUser().kotlinx.coroutines.flow.firstOrNull()
+                    val localUser = userDao.getUser().firstOrNull()
                     if (localUser != null) {
                         // Generate local hash using BCrypt
                         val hashedPin = org.mindrot.jbcrypt.BCrypt.hashpw(newPin, org.mindrot.jbcrypt.BCrypt.gensalt())
@@ -57,7 +58,7 @@ class PinRepositoryImpl @Inject constructor(
     override suspend fun verifyPin(pin: String): Result<Boolean> {
         // 1. Check local DB first for hash
         try {
-            val localUser = userDao.getUser().kotlinx.coroutines.flow.firstOrNull()
+            val localUser = userDao.getUser().firstOrNull()
             if (localUser != null && !localUser.pinHash.isNullOrEmpty()) {
                 // Use BCrypt to verify
                 try {
@@ -89,7 +90,7 @@ class PinRepositoryImpl @Inject constructor(
     override suspend fun getPinStatus(): Result<Boolean> {
         // 1. Check local DB first
         try {
-            val localUser = userDao.getUser().kotlinx.coroutines.flow.firstOrNull()
+            val localUser = userDao.getUser().firstOrNull()
             if (localUser != null && localUser.isPinSet) {
                 return Result.success(true)
             }
@@ -105,7 +106,7 @@ class PinRepositoryImpl @Inject constructor(
                 
                 // 3. Update local DB if needed
                 try {
-                    val localUser = userDao.getUser().kotlinx.coroutines.flow.firstOrNull()
+                    val localUser = userDao.getUser().firstOrNull()
                     if (localUser != null && localUser.isPinSet != isSet) {
                         userDao.insertUser(localUser.copy(isPinSet = isSet))
                     }
