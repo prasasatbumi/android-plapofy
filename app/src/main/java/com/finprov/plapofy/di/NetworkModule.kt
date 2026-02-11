@@ -1,8 +1,7 @@
 package com.finprov.plapofy.di
 
 import android.content.Context
-import com.chuckerteam.chucker.api.ChuckerCollector
-import com.chuckerteam.chucker.api.ChuckerInterceptor
+
 import com.finprov.plapofy.BuildConfig
 import com.finprov.plapofy.data.local.TokenManager
 import com.finprov.plapofy.data.remote.api.AuthApi
@@ -60,16 +59,7 @@ object NetworkModule {
         return AuthInterceptor(tokenManager)
     }
 
-    @Provides
-    @Singleton
-    fun provideChuckerInterceptor(@ApplicationContext context: Context): ChuckerInterceptor {
-        return ChuckerInterceptor.Builder(context)
-            .collector(ChuckerCollector(context))
-            .maxContentLength(250_000L)
-            .redactHeaders(emptySet())
-            .alwaysReadResponseBody(true)
-            .build()
-    }
+
 
     @Provides
     @Singleton
@@ -85,14 +75,12 @@ object NetworkModule {
     fun provideOkHttpClient(
         authInterceptor: AuthInterceptor,
         sessionExpiredInterceptor: SessionExpiredInterceptor,
-        chuckerInterceptor: ChuckerInterceptor,
         certificatePinner: CertificatePinner
     ): OkHttpClient {
         return OkHttpClient.Builder()
             .certificatePinner(certificatePinner)
             .addInterceptor(authInterceptor)
             .addInterceptor(sessionExpiredInterceptor)
-            .addInterceptor(chuckerInterceptor)
             .addInterceptor(HttpLoggingInterceptor().apply {
                 level = HttpLoggingInterceptor.Level.BODY
             })
