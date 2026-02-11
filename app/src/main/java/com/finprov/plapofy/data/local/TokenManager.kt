@@ -25,6 +25,7 @@ class TokenManager @Inject constructor(
         private val USER_ID_KEY = longPreferencesKey("user_id")
         private val USERNAME_KEY = stringPreferencesKey("username")
         private val USER_NAME_KEY = stringPreferencesKey("user_name")
+        private val PIN_SET_KEY = booleanPreferencesKey("pin_set")
     }
 
     // Token Flow
@@ -47,18 +48,31 @@ class TokenManager @Inject constructor(
         preferences[USER_NAME_KEY]
     }
 
+    // Pin Set Flow
+    val isPinSet: Flow<Boolean> = context.dataStore.data.map { preferences ->
+        preferences[PIN_SET_KEY] ?: false
+    }
+
     // Check if user is logged in
     val isLoggedIn: Flow<Boolean> = context.dataStore.data.map { preferences ->
         !preferences[TOKEN_KEY].isNullOrEmpty()
     }
 
     // Save token and user info
-    suspend fun saveAuthData(token: String, userId: Long, username: String, userName: String?) {
+    suspend fun saveAuthData(token: String, userId: Long, username: String, userName: String?, pinSet: Boolean = false) {
         context.dataStore.edit { preferences ->
             preferences[TOKEN_KEY] = token
             preferences[USER_ID_KEY] = userId
             preferences[USERNAME_KEY] = username
             userName?.let { preferences[USER_NAME_KEY] = it }
+            preferences[PIN_SET_KEY] = pinSet
+        }
+    }
+
+    // Update PIN status independently
+    suspend fun setPinSet(isSet: Boolean) {
+        context.dataStore.edit { preferences ->
+            preferences[PIN_SET_KEY] = isSet
         }
     }
 
@@ -74,6 +88,7 @@ class TokenManager @Inject constructor(
             preferences.remove(USER_ID_KEY)
             preferences.remove(USERNAME_KEY)
             preferences.remove(USER_NAME_KEY)
+            preferences.remove(PIN_SET_KEY)
         }
     }
 }

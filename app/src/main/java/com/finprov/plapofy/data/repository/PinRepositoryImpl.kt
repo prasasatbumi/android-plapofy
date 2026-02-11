@@ -8,13 +8,15 @@ import com.finprov.plapofy.domain.repository.PinRepository
 import javax.inject.Inject
 
 class PinRepositoryImpl @Inject constructor(
-    private val api: PinApi
+    private val api: PinApi,
+    private val tokenManager: com.finprov.plapofy.data.local.TokenManager
 ) : PinRepository {
 
     override suspend fun setPin(password: String, pin: String): Result<Unit> {
         return try {
             val response = api.setPin(SetPinRequest(password, pin, pin))
             if (response.isSuccessful) {
+                tokenManager.setPinSet(true)
                 Result.success(Unit)
             } else {
                 Result.failure(Exception("Failed to set PIN: ${response.message()}"))
@@ -54,7 +56,9 @@ class PinRepositoryImpl @Inject constructor(
         return try {
             val response = api.getPinStatus()
             if (response.isSuccessful && response.body() != null) {
-                Result.success(response.body()!!.pinSet)
+                val isSet = response.body()!!.pinSet
+                tokenManager.setPinSet(isSet)
+                Result.success(isSet)
             } else {
                 Result.failure(Exception("Failed to get PIN status"))
             }

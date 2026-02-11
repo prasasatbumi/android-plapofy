@@ -21,9 +21,10 @@ data class UserEntity(
     val bankAccountNumber: String?,
     val isActive: Boolean = true,
     val kycStatus: String? = null,
-    val ktpImagePath: String? = null,
-    val selfieImagePath: String? = null,
-    val isGoogleUser: Boolean = false
+    @SerializedName("ktpImagePath") val ktpImagePath: String? = null,
+    @SerializedName("selfieImagePath") val selfieImagePath: String? = null,
+    @SerializedName("isGoogleUser") val isGoogleUser: Boolean = false,
+    @SerializedName("pinSet") val pinSet: Boolean = false
 ) {
     fun toDomain(): User {
         return User(
@@ -43,7 +44,8 @@ data class UserEntity(
             kycStatus = kycStatus,
             ktpImagePath = ktpImagePath,
             selfieImagePath = selfieImagePath,
-            isGoogleUser = isGoogleUser
+            isGoogleUser = isGoogleUser,
+            pinSet = pinSet
         )
     }
 }
@@ -66,6 +68,7 @@ fun User.toEntity(): UserEntity {
         kycStatus = kycStatus,
         ktpImagePath = ktpImagePath,
         selfieImagePath = selfieImagePath,
-        isGoogleUser = isGoogleUser
+        isGoogleUser = isGoogleUser,
+        pinSet = pinSet
     )
 }

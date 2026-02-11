@@ -8,17 +8,25 @@ import com.finprov.plapofy.domain.repository.AuthRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class PinViewModel @Inject constructor(
     private val pinRepository: PinRepository,
-    private val authRepository: AuthRepository
+    private val authRepository: AuthRepository,
+    private val tokenManager: com.finprov.plapofy.data.local.TokenManager
 ) : ViewModel() {
 
-    private val _hasPin = MutableStateFlow<Boolean?>(null)
-    val hasPin = _hasPin.asStateFlow()
+    // Offline-first: Observe TokenManager for PIN status
+    val hasPin = tokenManager.isPinSet
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = false
+        )
 
     private val _isLoading = MutableStateFlow(false)
     val isLoading = _isLoading.asStateFlow()
@@ -45,6 +53,8 @@ class PinViewModel @Inject constructor(
              val user = authRepository.getCurrentUser()
              _isGoogleUser.value = user?.isGoogleUser == true
         }
+        // Initial sync with backend
+        checkPinStatus()
     }
     
     fun verifyPassword(password: String, onSuccess: () -> Unit) {
@@ -75,13 +85,12 @@ class PinViewModel @Inject constructor(
             _isLoading.value = true
             pinRepository.getPinStatus()
                 .onSuccess { status ->
-                    _hasPin.value = status
+                    // TokenManager is updated by Repository, Flow will emit new value
                     _isLoading.value = false
                 }
                 .onFailure {
                     _isLoading.value = false
-                    // Don't show error for status check, default to false
-                    _hasPin.value = false
+                    // Offline? Keep showing cached value from Flow
                 }
         }
     }
@@ -94,7 +103,7 @@ class PinViewModel @Inject constructor(
                 .onSuccess {
                     _isLoading.value = false
                     _successMessage.value = "PIN berhasil dibuat"
-                    _hasPin.value = true
+                    // _hasPin.value = true -> Handled by TokenManager flow
                     onSuccess()
                 }
                 .onFailure { e ->

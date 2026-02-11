@@ -35,7 +35,8 @@ class AuthRepositoryImpl @Inject constructor(
                     token = loginData.token,
                     userId = loginData.userId,
                     username = loginData.username,
-                    userName = loginData.username 
+                    userName = loginData.username,
+                    pinSet = loginData.pinSet
                 )
                 
                 try {
@@ -148,6 +149,7 @@ class AuthRepositoryImpl @Inject constructor(
 
             // Fallback to minimal user from TokenManager
             val userName = tokenManager.userName.first()
+            val isPinSet = tokenManager.isPinSet.first()
             return User(
                 id = userId,
                 username = username,
@@ -160,7 +162,8 @@ class AuthRepositoryImpl @Inject constructor(
                 occupation = null,
                 monthlyIncome = null,
                 bankName = null,
-                bankAccountNumber = null
+                bankAccountNumber = null,
+                pinSet = isPinSet
             )
         }
         return null
@@ -225,7 +228,8 @@ class AuthRepositoryImpl @Inject constructor(
                     token = loginData.token,
                     userId = loginData.userId,
                     username = loginData.username,
-                    userName = loginData.username 
+                    userName = loginData.username,
+                    pinSet = loginData.pinSet
                 )
                 
                 try {
@@ -252,7 +256,8 @@ class AuthRepositoryImpl @Inject constructor(
                     monthlyIncome = null,
                     bankName = null,
                     bankAccountNumber = null,
-                    isActive = true
+                    isActive = true,
+                    pinSet = loginData.pinSet
                 )
 
                 Result.success(basicUser)
