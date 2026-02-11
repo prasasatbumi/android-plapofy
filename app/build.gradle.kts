@@ -32,8 +32,25 @@ android {
         
     }
 
+    signingConfigs {
+        create("ciSigning") {
+            val keystorePath = System.getenv("KEYSTORE_PATH")
+            if (keystorePath != null) {
+                storeFile = file(keystorePath)
+                storePassword = System.getenv("KEYSTORE_PASSWORD")
+                keyAlias = System.getenv("KEY_ALIAS")
+                keyPassword = System.getenv("KEY_PASSWORD")
+            }
+        }
+    }
+
     buildTypes {
         getByName("debug") {
+            val keystorePath = System.getenv("KEYSTORE_PATH")
+            if (keystorePath != null) {
+                signingConfig = signingConfigs.getByName("ciSigning")
+            }
+            
             val debugBaseUrl =
                 (project.findProperty("DEBUG_BASE_URL") as String?)
                     ?.takeIf { it.isNotBlank() }
