@@ -51,12 +51,9 @@ class PinRepositoryImpl @Inject constructor(
         } catch (e: Exception) {
             // Offline Fallback: Optimistic verification
             // If we know the user HAS a PIN set locally, we assume they entered it correctly
-            // to allow the offline flow to proceed. The backend will validate it later during sync if needed,
-            // though submission endpoints currently don't require PIN in the payload.
-            // This is a tradeoff for UX vs Security in offline mode.
-            // Ideally, we would hash the PIN locally and verify against that.
+            // to allow the offline flow to proceed. The backend will validate it later during sync if needed.
             
-            val isPinSet = kotlinx.coroutines.flow.firstOrNull(tokenManager.isPinSet) == true
+            val isPinSet = tokenManager.isPinSet.firstOrNull() == true
             if (isPinSet) {
                  Result.success(true)
             } else {
@@ -77,7 +74,7 @@ class PinRepositoryImpl @Inject constructor(
             }
         } catch (e: Exception) {
             // Offline Fallback
-             val isPinSet = kotlinx.coroutines.flow.firstOrNull(tokenManager.isPinSet) == true
+             val isPinSet = tokenManager.isPinSet.firstOrNull() == true
              Result.success(isPinSet)
         }
     }
