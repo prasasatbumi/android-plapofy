@@ -55,7 +55,7 @@ android {
                 (project.findProperty("DEBUG_BASE_URL") as String?)
                     ?.takeIf { it.isNotBlank() }
                     ?: System.getenv("DEBUG_BASE_URL")
-                    ?: "http://35.239.137.125/api/"
+                    ?: "http://136.115.165.40/api/"
             buildConfigField("String", "BASE_URL", "\"$debugBaseUrl\"")
         }
 
@@ -64,7 +64,7 @@ android {
                 (project.findProperty("RELEASE_BASE_URL") as String?)
                     ?.takeIf { it.isNotBlank() }
                     ?: System.getenv("RELEASE_BASE_URL")
-                    ?: "https://35.239.137.125/api/"
+                    ?: "https://136.115.165.40/api/"
             buildConfigField("String", "BASE_URL", "\"$releaseBaseUrl\"")
             isMinifyEnabled = true
             isShrinkResources = true
